@@ -1,32 +1,28 @@
 # Contributing to zk-agent-attestation
 
-First off, thank you for considering contributing to the **Prove-Transform-Verify (PTV) Protocol** reference implementation! It's people like you that make this ecosystem robust.
+Thank you for considering contributing to this project!
 
----
+## How to Contribute
 
-## 🚀 How to Contribute
+1. Fork the repository
+2. Create a feature branch (`git checkout -b feature/amazing-feature`)
+3. Make your changes
+4. Ensure tests pass (`pytest`)
+5. Commit your changes (`git commit -m 'Add amazing feature'`)
+6. Push to the branch (`git push origin feature/amazing-feature`)
+7. Open a Pull Request
 
-1.  **Fork the Repository**: Create your own copy of the project.
-2.  **Create a Feature Branch**: `git checkout -b feature/amazing-feature`
-3.  **Commit Your Changes**: `git commit -m 'Add some amazing feature'`
-4.  **Push to the Branch**: `git push origin feature/amazing-feature`
-5.  **Open a Pull Request**: Submit your changes for review.
+## Reporting Issues
 
----
+Please use the GitHub Issues tab with a clear title and description, including:
+- Steps to reproduce
+- Expected vs actual behavior
+- Environment details (Python version, OS)
 
-## 📋 Guidelines
+## Code Style
 
--   **Code Style**: Follow PEP 8 for Python code and ensure `circom` circuits are well-commented.
--   **Tests**: Ensure all tests in the `tests/` directory pass before submitting a PR.
--   **Security**: Since this is a security-critical project (ZKP + TPM), avoid introducing dependencies without a clear security audit.
--   **ZKP Reproducibility**: When modifying circuits, provide a summary of the `snarkjs` benchmarks (proof generation time, constraint count).
+- Follow PEP 8 guidelines
+- Write meaningful commit messages
+- Add tests for new functionality
 
----
-
-## ⚖️ License
-
-By contributing, you agree that your contributions will be licensed under its **Apache License 2.0**.
-
----
-
-**Made with ❤️ for trusted, sovereign, and verifiable AI agents.**
+We welcome contributions that improve documentation, benchmarks, or add new use cases.

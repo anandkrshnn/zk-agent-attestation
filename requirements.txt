@@ -1,24 +1,17 @@
-# zk-agent-attestation — Production Dependencies (v0.1.0)
+# Core Dependencies
+cryptography>=42.0.0
+pyyaml>=6.0
+requests>=2.31.0
+pycryptodome>=3.19.0
+python-dotenv>=1.0.0
 
-# Core Framework & CLI
+# CLI & Environment
 click>=8.1.7            # Professional CLI interface
 rich>=13.7.0             # Terminal formatting & logs
-pyyaml>=6.0.1           # Policy configuration management
 pydantic>=2.5.2         # Data validation for PTV claims
-python-dotenv>=1.0.0    # Environment variable management
 
-# Cryptography & Attestation
-pycryptodome>=3.19.0    # Core primitives (AES, SHA-256)
-cryptography>=41.0.4     # High-level recipes & certificates
-requests>=2.31.0         # Remote attestation & orchestrator sync
-base58>=2.1.1           # Encoding for identifiers
-
-# Zero-Knowledge Utilities
-# (Note: Most ZK logic uses snarkjs via Node.js; these are Python helpers)
-# circomlibpy>=0.0.1      # Python implementation of circomlib
-
-# Testing & Quality Assurance
-pytest>=7.4.3
+# Testing & Quality
+pytest>=8.0.0
 pytest-cov>=4.1.0       # Coverage reporting
 black>=23.11.0          # Code formatting
 flake8>=6.1.0           # Linting
