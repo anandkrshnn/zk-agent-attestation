@@ -1,0 +1,13 @@
+# Core Dependencies
+pyyaml>=6.0.1
+requests>=2.31.0
+pycryptodome>=3.19.0
+cryptography>=41.0.4
+
+# Zero-Knowledge Utilities
+# snarkjs-python-wrapper (or equivalent)
+
+# Testing & Quality
+pytest>=7.4.3
+black>=23.11.0
+flake8>=6.1.0
