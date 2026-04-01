@@ -1,10 +1,12 @@
 # zk-agent-attestation
+**Hardware-anchored identity and verifiable trust for autonomous AI agents.**
 
 [![License](https://img.shields.io/badge/License-Apache_2.0-blue.svg)](LICENSE)
 [![Python](https://img.shields.io/badge/Python-3.10%2B-blue)](https://www.python.org/)
 [![Groth16](https://img.shields.io/badge/zk--SNARK-Groth16-8A2BE2)](https://github.com/iden3/snarkjs)
 [![TPM 2.0](https://img.shields.io/badge/Hardware%20Root-TPM%202.0-orange)](https://trustedcomputinggroup.org/)
 [![Status](https://img.shields.io/badge/Status-Active_Development-yellow.svg)](https://github.com/anandkrshnn/zk-agent-attestation)
+[![Version](https://img.shields.io/badge/Version-v0.1.0-green.svg)](https://github.com/anandkrshnn/zk-agent-attestation/releases/tag/v0.1.0)
 
 **Hardware-Anchored Zero-Knowledge Attestation for AI Agents**
 
