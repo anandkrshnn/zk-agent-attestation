@@ -205,3 +205,15 @@ cython_debug/
 marimo/_static/
 marimo/_lsp/
 __marimo__/
+
+# zk-SNARK / circom artifacts
+*.zkey
+*.wit
+*.r1cs
+*.sym
+pot*_final.ptau
+verification_key.json
+proof.json
+public.json
+witness.wtns
+circuit.wasm

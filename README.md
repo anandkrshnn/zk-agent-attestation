@@ -45,7 +45,7 @@ The **Prove-Transform-Verify (PTV)** protocol addresses this challenge by delive
 graph TD
     A[AI Agent] --> B[TPM 2.0 / Secure Enclave]
     B --> C[Collect Attestation + Claims]
-    C --> D[Raw Claims<br>(Model Hash, Policy, Hardware State)]
+    C --> D[Raw Claims: Model Hash, Policy, Hardware State]
     D --> E[Groth16 zk-SNARK Circuit]
     E --> F[Zero-Knowledge Proof (ZKP)]
     F --> G[Verifier / Orchestrator]
