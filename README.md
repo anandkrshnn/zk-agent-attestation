@@ -1,4 +1,5 @@
 # zk-agent-attestation
+**Hardware-anchored identity and verifiable trust for autonomous AI agents.**
 
 [![License](https://img.shields.io/badge/License-Apache_2.0-blue.svg)](LICENSE)
 [![Python](https://img.shields.io/badge/Python-3.10%2B-blue)](https://www.python.org/)
@@ -44,15 +45,15 @@ Traditional methods (API keys, JWTs, certificates) are insufficient because agen
 
 ```mermaid
 graph TD
-    A[AI Agent] --> B[TPM 2.0 / Secure Enclave]
+    A[AI Agent] --> B[Hardware Root of Trust]
     B --> C[Collect Attestation + Claims]
-    C --> D["Raw Claims\n(Model Hash, Policy,\nHardware State)"]
+    C --> D["Raw Claims: Model Hash, Policy, Hardware State"]
     D --> E[Groth16 zk-SNARK Circuit]
     E --> F[Zero-Knowledge Proof (ZKP)]
     F --> G[Verifier / Orchestrator]
-    G --> H{Valid?}
-    H -->|Yes| I[Grant Trust & Access]
-    H -->|No| J[Reject]
+    G --> H{Validation}
+    H -->|Success| I[Grant Trust & Access]
+    H -->|Failure| J[Access Denied]
 ```
 
 **Core Flow**: Prove → Transform → Verify
