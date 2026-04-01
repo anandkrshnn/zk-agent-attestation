@@ -4,11 +4,11 @@
 [![Python](https://img.shields.io/badge/Python-3.10%2B-blue)](https://www.python.org/)
 [![Groth16](https://img.shields.io/badge/zk--SNARK-Groth16-8A2BE2)](https://github.com/iden3/snarkjs)
 [![TPM 2.0](https://img.shields.io/badge/Hardware%20Root-TPM%202.0-orange)](https://trustedcomputinggroup.org/)
-[![Benchmarks](https://img.shields.io/badge/Benchmark-187ms-success)](benchmarks/)
+[![Benchmark](https://img.shields.io/badge/Benchmark-187ms-success)](benchmarks/)
 
 **Hardware-Anchored Zero-Knowledge Attestation for AI Agents**
 
-Part of the **Prove-Transform-Verify (PTV) Protocol** — A practical reference implementation for trusted, sovereign, and verifiable **AI agent identity**.
+Part of the **Prove-Transform-Verify (PTV) Protocol** — Reference implementation for trusted, sovereign, and verifiable **AI agent identity**.
 
 ---
 
@@ -27,20 +27,15 @@ Part of the **Prove-Transform-Verify (PTV) Protocol** — A practical reference 
 
 ## Why PTV?
 
-In 2026, autonomous AI agents are rapidly moving into production, but **agent identity, trust, and governance** remain the single biggest bottleneck.
+In 2026, autonomous AI agents are moving into production, but **agent identity and trust** remain the biggest challenge.
 
-Traditional approaches (API keys, JWT tokens, or basic certificates) fail for agentic systems because agents:
-- Operate autonomously across clouds and jurisdictions
-- Can be easily hijacked or impersonated
-- Must prove compliance in highly regulated environments
+Traditional methods fail because agents act autonomously across clouds and jurisdictions, can be hijacked, and must prove compliance in regulated environments.
 
 The **Prove-Transform-Verify (PTV)** protocol addresses this challenge by delivering:
-- **Hardware-anchored identity** using TPM 2.0 or Secure Enclave
-- **Privacy-preserving proofs** using Groth16 zk‑SNARKs
-- **Verifiable compliance** without leaking sensitive data or model weights
-- Complete coverage of the **STRIDE** threat model
-
-PTV enables secure, sovereign, and cryptographically verifiable AI agent interactions in regulated and cross‑jurisdictional environments.
+- **Hardware-anchored identity** (TPM 2.0 / Secure Enclave)
+- **Privacy-preserving proofs** using Groth16 zk-SNARKs
+- **Verifiable compliance** without leaking sensitive data
+- Full coverage of the **STRIDE** threat model
 
 ---
 
@@ -60,8 +55,8 @@ graph TD
 ```
 
 **Core Flow (Prove → Transform → Verify)**:
-1. **Prove** — Agent generates hardware‑backed cryptographic claims
-2. **Transform** — Convert claims into a compact, privacy‑preserving Groth16 ZKP
+1. **Prove** — Agent generates hardware-backed cryptographic claims
+2. **Transform** — Convert claims into a compact, privacy-preserving Groth16 ZKP
 3. **Verify** — Fast and lightweight verification by the relying party
 
 ---
@@ -69,16 +64,16 @@ graph TD
 ## Use Cases
 
 ### Healthcare
-- Cross‑border medical AI agents proving compliance with data residency and consent rules without exposing patient records
-- Verifiable multi‑agent diagnostic and treatment planning workflows
+- Cross-border medical AI agents proving compliance with data residency and consent rules without exposing patient records
+- Verifiable multi-agent diagnostic and treatment planning workflows
 
 ### Finance
 - Autonomous trading and risk agents that cryptographically prove regulatory compliance (AML/KYC), model integrity, and execution policy
 - Secure fraud detection agents operating across sovereign cloud boundaries
 
 ### Enterprise Sovereign AI
-- Multi‑cloud and federated agent orchestration with strong trust guarantees
-- Compliance‑ready agent identity for EU AI Act, NIST guidelines, and similar frameworks
+- Multi-cloud and federated agent orchestration with strong trust guarantees
+- Compliance-ready agent identity for EU AI Act, NIST guidelines, and similar frameworks
 
 ---
 
@@ -92,8 +87,8 @@ graph TD
 ### Installation
 
 ```bash
-git clone https://github.com/anandkrshnn/sovereign-ai-stack.git
-cd sovereign-ai-stack/zk-agent-attestation
+git clone https://github.com/anandkrshnn/zk-agent-attestation.git
+cd zk-agent-attestation
 
 python -m venv venv
 source venv/bin/activate          # Windows: venv\Scripts\activate
@@ -104,7 +99,7 @@ pip install -r requirements.txt
 ### Run Demo
 
 ```bash
-# Run a basic Prove‑Transform‑Verify demonstration
+# Run a basic Prove-Transform-Verify demonstration
 python main.py --mode demo
 ```
 
