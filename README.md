@@ -34,7 +34,7 @@ Part of the **Prove-Transform-Verify (PTV) Protocol** — A clean, reproducible 
 
 In 2026, autonomous AI agents are rapidly moving from pilots to production. However, **agent identity and trust** remain the biggest unsolved challenge.
 
-Companies like **Olam** and **Wipro** in agriculture, hospitals using cross-border diagnostic agents, and financial institutions running autonomous trading agents all face the same problem:  
+Autonomous AI agents in agriculture, hospitals using cross-border diagnostic agents, and financial institutions running autonomous trading agents all face the same problem:  
 How do we prove that an AI agent is running the correct model, on trusted hardware, and complying with regulations — without exposing sensitive data or model weights?
 
 **PTV (Prove → Transform → Verify)** solves this critical gap by providing:
