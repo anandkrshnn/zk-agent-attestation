@@ -44,17 +44,20 @@ Traditional methods (API keys, JWTs, certificates) are insufficient because agen
 ## Architecture
 
 ```mermaid
+
 graph TD
-    A[AI Agent] --> B[Hardware Root of Trust]
-    B --> C[Collect Attestation + Claims]
-    C --> D["Raw Claims: Model Hash, Policy, Hardware State"]
-    D --> E[Groth16 zk-SNARK Circuit]
-    E --> F[Zero-Knowledge Proof (ZKP)]
-    F --> G[Verifier / Orchestrator]
-    G --> H{Validation}
-    H -->|Success| I[Grant Trust & Access]
-    H -->|Failure| J[Access Denied]
+A["AI Agent"] --> B["Hardware Root of Trust"]
+B --> C["Collect Attestation + Claims"]
+C --> D["Raw Claims: Model Hash, Policy, Hardware State"]
+D --> E["Groth16 zk-SNARK Circuit"]
+E --> F["Zero-Knowledge Proof (ZKP)"]
+F --> G["Verifier / Orchestrator"]
+G --> H{"Validation"}
+H -->|Success| I["Grant Trust & Access"]
+H -->|Failure| J["Access Denied"]
 ```
+
+                                    
 
 **Core Flow**: Prove → Transform → Verify
 
