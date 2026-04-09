@@ -1,21 +1,12 @@
-# Core Dependencies
-cryptography>=43.0.0
-PyYAML>=6.0.1
-pytest>=8.0.0
-requests>=2.32.0
-pycryptodome>=3.19.0
-python-dotenv>=1.0.0
-
-# CLI & Environment
-click>=8.1.7            # Professional CLI interface
-rich>=13.7.0             # Terminal formatting & logs
-pydantic>=2.5.2         # Data validation for PTV claims
+# Core dependencies
+cryptography>=42.0.0
+pyyaml>=6.0
+typer>=0.9.0
 tqdm>=4.66.0
 
-# Testing & Quality
-pytest>=8.0.0
-pytest-cov>=4.1.0       # Coverage reporting
-black>=23.11.0          # Code formatting
-flake8>=6.1.0           # Linting
-mypy>=1.7.1             # Static type checking
+# Demo UI
+streamlit>=1.32.0
+plotly>=5.24.0
 
+# Development
+pytest>=8.0.0
