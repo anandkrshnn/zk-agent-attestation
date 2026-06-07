@@ -42,7 +42,7 @@ Prove–Transform–Verify (PTV) is a zero-knowledge attestation protocol that p
 | Witness generation | < 50ms |
 | Groth16 proof generation | ~400ms |
 | Proof verification | < 5ms |
-| Circuit constraints | 2 (model hash + policy) |
+| Non-linear constraints | 4 (2 per equality check) |
 
 > Proof generation is a one-time per-session cost. Verification at ~5ms is suitable for real-time API gatekeeping.
 
@@ -54,12 +54,13 @@ Prove–Transform–Verify (PTV) is a zero-knowledge attestation protocol that p
 ```bash
 npm install -g snarkjs
 # circom binary: https://github.com/iden3/circom/releases
+# Add circom to PATH before running
 ```
 
 ### Run the full pipeline
 ```bash
-# 1. Compile circuit
-circom circuits/agent_attestation.circom --r1cs --wasm --sym -o circuits/
+# 1. Compile circuit (--O0 disables optimiser to preserve all constraints)
+circom circuits/agent_attestation.circom --r1cs --wasm --sym -o circuits/ --O0
 
 # 2. Trusted setup (one-time)
 snarkjs powersoftau new bn128 12 pot12_0000.ptau -v
@@ -107,6 +108,7 @@ snarkjs groth16 verify verification_key.json public.json proof.json
 ## ⚠️ Current Limitations
 
 - Hash inputs are field elements (integers); full SHA-256 in-circuit requires Poseidon hash (planned)
+- `--O0` flag disables circom optimiser; production circuits should use circomlib's IsEqual component
 - TPM hardware bridge is research-stage; current implementation uses software-simulated measurements
 - Single-threaded proof generation; parallelisation planned for v2
 
