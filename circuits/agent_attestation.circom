@@ -1,14 +1,11 @@
 pragma circom 2.0.0;
+include "../node_modules/circomlib/circuits/comparators.circom";
 
-template IsEqual() {
-    signal input in[2];
-    signal output out;
-    signal diff;
-    diff <== in[1] - in[0];
-    out <-- (diff == 0) ? 1 : 0;
-    out * diff === 0;
-    out * (out - 1) === 0;
-}
+/*
+ * zk-agent-attestation — Agent Identity Circuit (v1.2)
+ * Uses circomlib's battle-tested IsEqual component.
+ * No --O0 flag needed; optimiser runs fully.
+ */
 
 template AgentAttestation() {
     signal input expected_model_hash;
