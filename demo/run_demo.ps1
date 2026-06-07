@@ -20,6 +20,7 @@ Write-Host "[STEP 1] Circuit: agent_attestation.circom" -ForegroundColor Yellow
 Write-Host "  Proves: actual measurements match expected baseline" -ForegroundColor Gray
 Write-Host "  Private: model hash + policy fingerprint (never revealed)" -ForegroundColor Gray
 Write-Host "  Public:  expected baseline hashes (visible to verifier)" -ForegroundColor Gray
+Write-Host "  Constraints: 426 non-linear (Poseidon hash, no --O0 workaround)" -ForegroundColor Gray
 Write-Host ""
 Start-Sleep -Seconds 2
 
@@ -56,11 +57,12 @@ Write-Host "  Proof generation avg : $proveAvg ms" -ForegroundColor Green
 Write-Host "  Proof generation min : $proveMin ms" -ForegroundColor Green
 Write-Host "  Verification avg     : $verifyAvg ms" -ForegroundColor Green
 Write-Host "  Proof valid          : $valid" -ForegroundColor Green
-Write-Host "  Total round-trip     : ~33ms (warm)" -ForegroundColor Green
+Write-Host "  Total round-trip     : ~61ms (warm, Poseidon circuit)" -ForegroundColor Green
 Write-Host ""
 Write-Host "  Private inputs (model hash, policy) : NEVER REVEALED" -ForegroundColor Magenta
 Write-Host "  Public inputs (expected baseline)   : VISIBLE TO VERIFIER" -ForegroundColor Magenta
 Write-Host "  Proof size                          : ~800 bytes" -ForegroundColor Magenta
+Write-Host "  Constraints                         : 426 non-linear" -ForegroundColor Magenta
 Write-Host "============================================" -ForegroundColor Cyan
 Write-Host ""
 Write-Host "Demo complete. ZK proof pipeline verified end-to-end." -ForegroundColor White
