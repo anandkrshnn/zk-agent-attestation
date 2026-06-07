@@ -23,28 +23,26 @@ Prove–Transform–Verify (PTV) is a zero-knowledge attestation protocol that p
 │  PROVE   │  Agent measures model    │  TPM/Enclave      │
 │          │  hash + policy hash      │  (private)        │
 ├──────────┼──────────────────────────┼───────────────────┤
-│TRANSFORM │  Groth16 ZK proof        │  circom circuit   │
-│          │  generated from witness  │  snarkjs          │
+│TRANSFORM │  Groth16 ZK proof        │  circom + snarkjs │
+│          │  generated from witness  │  library mode     │
 ├──────────┼──────────────────────────┼───────────────────┤
-│  VERIFY  │  Verifier checks proof   │  ~5ms verify      │
+│  VERIFY  │  Verifier checks proof   │  ~9ms verify      │
 │          │  against public baseline │  (public key)     │
 └──────────┴──────────────────────────┴───────────────────┘
 ```
 
 ---
 
-## 📊 Benchmarks (Windows 11, Node.js v24, snarkjs v0.7)
+## 📊 Benchmark Results (10 runs each, Windows 11, Node.js v24, snarkjs v0.7)
 
-| Operation | Time |
-|---|---|
-| Circuit compilation | < 1s |
-| Trusted setup (one-time) | ~3 min |
-| Witness generation | < 50ms |
-| Groth16 proof generation | ~400ms |
-| Proof verification | < 5ms |
-| Non-linear constraints | 4 (2 per equality check) |
+| Config | Method | Prove Avg | Prove Min | Verify Avg |
+|---|---|---|---|---|
+| 1 | Custom circuit, CLI (`--O0`) | 435ms | 420ms | — |
+| 2 | circomlib IsEqual, CLI | 435ms | 411ms | — |
+| 3 | snarkjs library, no CLI overhead | 45.9ms | 21ms | — |
+| **4** | **snarkjs library, prove + verify** | **44.9ms** | **21ms** | **8.8ms** |
 
-> Proof generation is a one-time per-session cost. Verification at ~5ms is suitable for real-time API gatekeeping.
+> **Key insight:** CLI configs (1 & 2) include ~410ms of Node.js startup overhead unrelated to cryptography. Library mode (configs 3 & 4) reflects real production API performance. Warm proof time is consistently **~24ms**. Total attestation round-trip: **~33ms**.
 
 ---
 
@@ -52,14 +50,13 @@ Prove–Transform–Verify (PTV) is a zero-knowledge attestation protocol that p
 
 ### Prerequisites
 ```bash
-npm install -g snarkjs
-# circom binary: https://github.com/iden3/circom/releases
-# Add circom to PATH before running
+npm install snarkjs circomlib
+# circom binary: https://github.com/iden3/circom/releases (add to PATH)
 ```
 
 ### Run the full pipeline
 ```bash
-# 1. Compile circuit (--O0 disables optimiser to preserve all constraints)
+# 1. Compile circuit (--O0 preserves all constraints)
 circom circuits/agent_attestation.circom --r1cs --wasm --sym -o circuits/ --O0
 
 # 2. Trusted setup (one-time)
@@ -76,12 +73,8 @@ node -e "require('fs').writeFileSync('input.json', JSON.stringify({expected_mode
 # 4. Generate witness
 node circuits/agent_attestation_js/generate_witness.js circuits/agent_attestation_js/agent_attestation.wasm input.json witness.wtns
 
-# 5. Prove
-snarkjs groth16 prove circuit_final.zkey witness.wtns proof.json public.json
-
-# 6. Verify
-snarkjs groth16 verify verification_key.json public.json proof.json
-# Expected output: [INFO] snarkJS: OK!
+# 5. Prove + Verify (library mode - production performance)
+node -e "const snarkjs=require('snarkjs');const fs=require('fs');const vkey=JSON.parse(fs.readFileSync('verification_key.json'));(async()=>{const{proof,publicSignals}=await snarkjs.groth16.prove('circuit_final.zkey','witness.wtns');const ok=await snarkjs.groth16.verify(vkey,publicSignals,proof);console.log('Valid:',ok);process.exit(0);})();"
 ```
 
 ---
@@ -99,7 +92,7 @@ snarkjs groth16 verify verification_key.json public.json proof.json
 
 ## 🏥 Smart Nation Use Cases
 
-- **Clinical Decision Support**: Hospital can verify AI model has not been tampered with before accepting diagnosis output
+- **Clinical Decision Support**: Hospital verifies AI model has not been tampered with before accepting diagnosis output
 - **Industrial AI**: Factory floor controller proves it is running the certified policy version
 - **Financial Services**: Regulatory audit trail without exposing proprietary model weights
 
@@ -108,7 +101,7 @@ snarkjs groth16 verify verification_key.json public.json proof.json
 ## ⚠️ Current Limitations
 
 - Hash inputs are field elements (integers); full SHA-256 in-circuit requires Poseidon hash (planned)
-- `--O0` flag disables circom optimiser; production circuits should use circomlib's IsEqual component
+- `--O0` disables circom optimiser; production circuits should use circomlib's IsEqual with optimiser enabled
 - TPM hardware bridge is research-stage; current implementation uses software-simulated measurements
 - Single-threaded proof generation; parallelisation planned for v2
 
