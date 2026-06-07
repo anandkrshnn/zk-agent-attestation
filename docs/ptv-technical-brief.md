@@ -3,7 +3,7 @@
 
 **Author:** Anandakrishnan Damodaran  
 **Date:** June 2026  
-**Version:** 1.1  
+**Version:** 2.0  
 **Reference:** IMDA Case 00651089
 
 ---
@@ -24,28 +24,44 @@ PTV has three phases:
 
 **PROVE** — The agent measures its own model hash and policy fingerprint inside a hardware-secure boundary (TPM chip or trusted execution environment). These measurements are private.
 
-**TRANSFORM** — A Groth16 zero-knowledge proof is generated. The proof cryptographically encodes "my private measurements match the public baseline" without revealing the measurements.
+**TRANSFORM** — Private measurements are hashed using **Poseidon** (a ZK-friendly hash function) inside the circuit. A Groth16 zero-knowledge proof is generated encoding "my Poseidon-hashed measurements match the public baseline" — without revealing the measurements.
 
 **VERIFY** — Any external verifier (regulator, auditor, API gateway) checks the proof against the public baseline in ~9ms. No access to the model is needed.
 
 ---
 
-## 3. Verified Performance Benchmarks
+## 3. Circuit Design
 
-All results measured on Windows 11, Node.js v24, snarkjs v0.7. Each configuration run 10 times.
+The circuit uses circomlib's production-grade components:
+- **Poseidon hash** (ZK-friendly, replaces SHA-256 in-circuit)
+- **IsEqual constraint** (enforces hash match)
+- **426 non-linear constraints** (no compiler workarounds)
+- **No `--O0` flag** (full optimiser enabled)
 
-| Config | Method | Prove Avg | Prove Min | Verify Avg |
-|---|---|---|---|---|
-| 1 | Custom circuit, CLI | 435ms | 420ms | — |
-| 2 | circomlib IsEqual, CLI | 435ms | 411ms | — |
-| 3 | snarkjs library, no CLI overhead | 45.9ms | 21ms | — |
-| **4** | **snarkjs library, prove + verify** | **44.9ms** | **21ms** | **8.8ms** |
-
-**Key finding:** CLI configurations include ~410ms of Node.js process startup overhead unrelated to cryptography. In production API deployment (library mode), warm proof generation is consistently **~24ms** and verification is **~9ms**. Total attestation round-trip: **~33ms**.
+Private inputs (model hash, policy fingerprint) are never exposed. The verifier only sees the expected Poseidon hashes and the proof.
 
 ---
 
-## 4. Alignment with Singapore AI Governance Framework
+## 4. Verified Performance Benchmarks
+
+All results measured on Windows 11, Node.js v24, snarkjs v0.7, circomlib v2.0.5.
+
+| Config | Circuit | Method | Constraints | Prove Avg | Verify Avg |
+|---|---|---|---|---|---|
+| 1 | Custom IsEqual | CLI | 4 (--O0) | 435ms | — |
+| 2 | circomlib IsEqual | CLI | 0 | 435ms | — |
+| 3 | circomlib IsEqual | Library | 0 | 46ms | — |
+| **4** | **Poseidon + IsEqual** | **Library** | **426** | **49ms** | **9.2ms** |
+
+**Key findings:**
+- CLI overhead (~410ms) is Node.js startup, unrelated to cryptography
+- Production library mode with real Poseidon hashing: **49ms prove, 9ms verify**
+- Total attestation round-trip: **~58ms warm**
+- Verification cost is constant regardless of proof complexity
+
+---
+
+## 5. Alignment with Singapore AI Governance Framework
 
 | MOGF Principle | PTV Contribution |
 |---|---|
@@ -57,19 +73,20 @@ All results measured on Windows 11, Node.js v24, snarkjs v0.7. Each configuratio
 
 ---
 
-## 5. Integration with AI Verify
+## 6. Integration with AI Verify
 
-PTV can operate as a **pre-verification layer** to AI Verify's testing toolkit:
+PTV operates as a **pre-verification layer** to AI Verify's testing toolkit:
 
 1. Before AI Verify runs its test battery, PTV confirms the model under test is the declared model
-2. AI Verify test results are then cryptographically bound to a specific model identity
+2. AI Verify test results are cryptographically bound to a specific model identity
 3. This prevents "model substitution" — passing tests with one model, deploying another
+4. The `verification_key.json` can be published alongside AI Verify reports as cryptographic evidence
 
 ---
 
-## 6. Smart Nation Use Cases
+## 7. Smart Nation Use Cases
 
-**Healthcare (MOH/IHiS):** Clinical AI systems prove to hospital networks that the deployed model matches the MOH-approved version — without exposing model weights. Attestation adds ~33ms to session initialisation.
+**Healthcare (MOH/IHiS):** Clinical AI systems prove to hospital networks that the deployed model matches the MOH-approved version. Attestation adds ~58ms to session initialisation — imperceptible to users.
 
 **Financial Services (MAS):** Algorithmic trading systems provide regulators a ZK proof of policy compliance without revealing proprietary strategies.
 
@@ -77,7 +94,7 @@ PTV can operate as a **pre-verification layer** to AI Verify's testing toolkit:
 
 ---
 
-## 7. External Validation
+## 8. External Validation
 
 - **OECD.AI Catalogue:** Submitted to the OECD.AI Catalogue of Tools & Metrics for Trustworthy AI
 - **IETF Internet-Draft:** draft-anandakrishnan-ptv-attested-agent-identity-00 (standardisation track)
@@ -85,7 +102,7 @@ PTV can operate as a **pre-verification layer** to AI Verify's testing toolkit:
 
 ---
 
-## 8. Proposed Next Steps with IMDA
+## 9. Proposed Next Steps with IMDA
 
 1. **Technical Briefing (30 min):** Live demo of the ZK proof pipeline + discussion of AI Verify integration points
 2. **Pilot Scope Definition:** Identify one Smart Nation use case for a proof-of-concept integration
