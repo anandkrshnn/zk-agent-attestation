@@ -1,6 +1,6 @@
 # 🔐 zk-agent-attestation
 
-**Hardware-Anchored Zero-Knowledge Attestation for AI Agent Identity — PTV Protocol Reference Implementation**
+**Hardware-Ready Zero-Knowledge Attestation for AI Agent Identity — PTV Protocol Reference Implementation**
 
 > **Status: Working Research Prototype.** The ZK proof pipeline is fully operational with Poseidon in-circuit hashing and 426 non-linear constraints. This repository implements the Prove–Transform–Verify (PTV) protocol as a reference for AI governance frameworks including Singapore's Model AI Governance Framework and AI Verify.
 
@@ -10,7 +10,7 @@
 
 Prove–Transform–Verify (PTV) is a zero-knowledge attestation protocol that provides cryptographic proof that an AI agent is running an authorised model and policy — without exposing model weights, proprietary configuration, or sensitive data.
 
-**The core claim:** A verifier can confirm *"this agent is who it claims to be"* with mathematical certainty, not just API-level trust.
+**The core claim:** A verifier can confirm *"this agent is who it claims to be"* with cryptographic attestation — not just API-level trust.
 
 ---
 
@@ -20,8 +20,8 @@ Prove–Transform–Verify (PTV) is a zero-knowledge attestation protocol that p
 ┌─────────────────────────────────────────────────────────┐
 │                    PTV Protocol Flow                     │
 ├──────────┬──────────────────────────┬───────────────────┤
-│  PROVE   │  Agent measures model    │  TPM/Enclave      │
-│          │  hash + policy hash      │  (private)        │
+│  PROVE   │  Agent measures model    │  Software-sim now │
+│          │  hash + policy hash      │  TPM/SGX in v2    │
 ├──────────┼──────────────────────────┼───────────────────┤
 │TRANSFORM │  Poseidon hash + Groth16 │  circom + snarkjs │
 │          │  ZK proof (426 constraints)  circomlibjs      │
@@ -43,6 +43,31 @@ Prove–Transform–Verify (PTV) is a zero-knowledge attestation protocol that p
 | **4** | **Poseidon + IsEqual** | **Library** | **426** | **49ms** | **9.2ms** |
 
 > **Config 4 is the production configuration.** Poseidon provides ZK-friendly in-circuit hashing with 426 real non-linear constraints. No `--O0` flag needed. Total attestation round-trip: **~58ms** warm.
+
+---
+
+## 🏥 Real-World Performance Context
+
+The 58ms round-trip is designed to be **non-intrusive** — attestation runs in the background before a result is surfaced to the end user.
+
+**Clinical Decision Support — Data Flow:**
+
+```
+[AI Model Inference]
+        │
+        ▼
+[PTV: Prove — model hash bound to policy hash]   ← ~49ms
+        │
+        ▼
+[PTV: Verify — proof checked against baseline]   ← ~9.2ms
+        │
+        ▼
+[Result surfaced to clinician on screen]         ← doctor sees result AFTER attestation completes
+```
+
+> The clinician sees the result only after silent background attestation passes. Zero added latency from the user's perspective. Total attestation overhead: **~58ms** — well within the response window of clinical decision systems (typically 500ms–2s).
+
+**Industrial AI context:** For real-time factory controllers requiring decisions at >100Hz (10ms cycles), PTV attestation is designed as a **session-level** check at model load time, not per-inference. The 58ms overhead is a one-time cost per deployment, not per decision.
 
 ---
 
@@ -85,19 +110,41 @@ powershell -ExecutionPolicy Bypass -File demo/run_demo.ps1
 
 ---
 
-## 🏥 Smart Nation Use Cases
+## 🔒 Security Considerations
 
-- **Clinical Decision Support**: Hospital verifies AI model has not been tampered with before accepting diagnosis output
-- **Industrial AI**: Factory floor controller proves it is running the certified policy version
-- **Financial Services**: Regulatory audit trail without exposing proprietary model weights
+### SHA-256 Truncation
+Poseidon circuit inputs require field elements within the BN128 scalar field (254-bit). SHA-256 produces 256-bit outputs. The current implementation truncates 2 bits when converting SHA-256 hashes to Poseidon inputs.
+
+**Impact:** The effective collision resistance is reduced from 2^128 (full SHA-256) to approximately 2^126. For a v0.1.0 research prototype operating in non-adversarial attestation environments, this reduction is acceptable. For high-security production deployments, this must be addressed before use.
+
+**Planned resolution (v3):** Full multi-field hashing — the SHA-256 output will be split across multiple Poseidon field inputs, preserving all 256 bits without truncation. This eliminates the collision risk entirely.
+
+**Current mitigation:** Do not use this implementation in adversarial environments where a motivated attacker has the ability to construct crafted model artifacts. Use only in controlled governance and audit workflows.
+
+---
+
+## 🗺️ Path to Hardware Integration
+
+The current implementation uses **software-simulated measurements** — the model hash and policy hash are computed in software, not anchored to physical hardware.
+
+The "Hardware-Ready" designation reflects the protocol's architecture, which is designed from the ground up for hardware binding. The integration path is:
+
+| Version | Hardware Target | Status |
+|---|---|---|
+| v0.1.0 (current) | Software simulation | ✅ Complete |
+| v2.0 | TPM 2.0 (Trusted Platform Module) | 🔬 Research |
+| v2.0 | Intel SGX / AMD SEV enclave | 🔬 Research |
+| v3.0 | ARM TrustZone (mobile/edge) | 📋 Planned |
+
+**v2 technical approach:** The PROVE stage will delegate model hash measurement to the TPM's PCR (Platform Configuration Register) banks, producing a hardware-signed measurement that replaces the current software hash. The ZK proof pipeline (TRANSFORM + VERIFY) remains unchanged — only the input measurement source changes.
 
 ---
 
 ## ⚠️ Current Limitations
 
-- TPM hardware bridge is research-stage; current implementation uses software-simulated measurements
+- Hardware binding is software-simulated in v0.1.0; TPM/SGX integration planned for v2
 - Single-threaded proof generation; parallelisation planned for v2
-- Poseidon inputs are truncated SHA-256 integers; full multi-field hashing planned for v3
+- Poseidon inputs use truncated SHA-256 (254-bit field); full multi-field hashing planned for v3 (see Security Considerations)
 
 ---
 
