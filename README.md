@@ -2,7 +2,7 @@
 
 **Hardware-Ready Zero-Knowledge Attestation for AI Agent Identity — PTV Protocol Reference Implementation**
 
-> **Status: Working Research Prototype.** The ZK proof pipeline is fully operational with Poseidon in-circuit hashing and 426 non-linear constraints. This repository implements the Prove–Transform–Verify (PTV) protocol as a reference for AI governance frameworks including Singapore's Model AI Governance Framework and AI Verify.
+> **Status: Working Research Prototype.** The ZK proof pipeline is fully operational with Poseidon in-circuit hashing and 426 non-linear constraints. The PROVE phase reads real hardware measurements from an Intel INTC TPM 2.0 chip via Windows WMI. This repository implements the Prove–Transform–Verify (PTV) protocol as a reference for AI governance frameworks including Singapore's Model AI Governance Framework and AI Verify.
 
 ---
 
@@ -20,8 +20,8 @@ Prove–Transform–Verify (PTV) is a zero-knowledge attestation protocol that p
 ┌─────────────────────────────────────────────────────────┐
 │                    PTV Protocol Flow                     │
 ├──────────┬──────────────────────────┬───────────────────┤
-│  PROVE   │  Agent measures model    │  Software-sim now │
-│          │  hash + policy hash      │  TPM/SGX in v2    │
+│  PROVE   │  Agent measures model    │  Intel INTC TPM   │
+│          │  hash + policy hash      │  SRK + TCG log    │
 ├──────────┼──────────────────────────┼───────────────────┤
 │TRANSFORM │  Poseidon hash + Groth16 │  circom + snarkjs │
 │          │  ZK proof (426 constraints)  circomlibjs      │
@@ -125,24 +125,24 @@ Poseidon circuit inputs require field elements within the BN128 scalar field (25
 
 ## 🗺️ Path to Hardware Integration
 
-The current implementation uses **software-simulated measurements** — the model hash and policy hash are computed in software, not anchored to physical hardware.
-
-The "Hardware-Ready" designation reflects the protocol's architecture, which is designed from the ground up for hardware binding. The integration path is:
+The PROVE phase reads real hardware measurements from a local Intel INTC TPM 2.0 chip via Windows WMI on the development machine. The integration path to production-grade HSM and cloud attestation is:
 
 | Version | Hardware Target | Status |
 |---|---|---|
-| v0.1.0 (current) | Software simulation | ✅ Complete |
-| v2.0 | TPM 2.0 (Trusted Platform Module) | 🔬 Research |
+| v0.1.0 (current) | Intel INTC TPM 2.0 — SRK + TCG log via WMI | ✅ Working |
+| v2.0 | TPM PCR bank binding (tpm2-tools / Linux) | 🔬 Research |
 | v2.0 | Intel SGX / AMD SEV enclave | 🔬 Research |
 | v3.0 | ARM TrustZone (mobile/edge) | 📋 Planned |
 
-**v2 technical approach:** The PROVE stage will delegate model hash measurement to the TPM's PCR (Platform Configuration Register) banks, producing a hardware-signed measurement that replaces the current software hash. The ZK proof pipeline (TRANSFORM + VERIFY) remains unchanged — only the input measurement source changes.
+**v0.1.0 hardware detail:** `GetSrkPublicKeyModulus()` returns the RSA Storage Root Key modulus — a value burned into the Intel INTC chip at manufacture, unique per device, inaccessible to software outside the TPM boundary. `GetTcgLog()` returns the firmware measurement log recording every component loaded at boot. Both values are hashed with SHA-256 and used as inputs to the Poseidon circuit in the PROVE phase.
+
+**v2 technical approach:** The PROVE stage will bind directly to TPM PCR banks via `tpm2-tools`, producing a hardware-signed PCR quote that replaces the current WMI measurement. The ZK proof pipeline (TRANSFORM + VERIFY) remains unchanged.
 
 ---
 
 ## ⚠️ Current Limitations
 
-- Hardware binding is software-simulated in v0.1.0; TPM/SGX integration planned for v2
+- TPM WMI bridge is Windows-only in v0.1.0; Linux tpm2-tools binding planned for v2
 - Single-threaded proof generation; parallelisation planned for v2
 - Poseidon inputs use truncated SHA-256 (254-bit field); full multi-field hashing planned for v3 (see Security Considerations)
 
