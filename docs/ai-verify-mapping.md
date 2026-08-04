@@ -1,10 +1,14 @@
 # AI Verify Governance Mapping — PTV Protocol
 
+> Mapped against: AI Verify Framework v2.0 (IMDA, 2022) and Singapore Model AI Governance Framework (MAIGF) v2.0 (PDPC/IDA, 2020)
+> 
+> *Disclaimer: This document is an independent technical mapping authored by the PTV project and is not an official publication of IMDA or PDPC.*
+
 ## Overview
 
 This document maps the PTV (Prove–Transform–Verify) protocol to specific principles and testing areas of the **AI Verify Framework** published by IMDA (Infocomm Media Development Authority, Singapore) and the **Singapore Model AI Governance Framework (MAIGF)**.
 
-AI Verify tests AI systems against 11 governance principles. PTV directly addresses **4 of these principles** with cryptographic evidence — not self-attestation or documentation-only claims.
+AI Verify tests AI systems against 11 governance principles. PTV directly addresses **5 of these principles** with cryptographic evidence — not self-attestation or documentation-only claims.
 
 ---
 
@@ -12,6 +16,7 @@ AI Verify tests AI systems against 11 governance principles. PTV directly addres
 
 | AI Verify Principle | Principle Description | How PTV Addresses It | Evidence Type |
 |---|---|---|---|
+| **Principle 3 — Transparency** | AI systems should be transparent about their capabilities, limitations, and operations | PTV provides cryptographic proof of the model and policy version running, ensuring system identity transparency without exposing proprietary internals | ZK attestation + model hash / policy fingerprint transparency |
 | **Principle 4 — Explainability** | AI systems should be able to explain decisions | PTV proves *which model* produced a decision, creating an immutable audit trail | ZK proof + public verification key |
 | **Principle 6 — Robustness** | AI systems should perform reliably and securely | PTV detects any modification to model weights (hash mismatch → proof fails) | Poseidon circuit constraint failure |
 | **Principle 8 — Accountability** | There should be mechanisms to ensure responsibility | PTV creates a cryptographic record linking agent output to a specific model version and policy | Handshake ID + proof transcript |
@@ -20,6 +25,19 @@ AI Verify tests AI systems against 11 governance principles. PTV directly addres
 ---
 
 ## Detailed Mapping
+
+### Principle 3 — Transparency
+
+**AI Verify test area:** Disclosure of AI interaction, disclosure of AI system's characteristics, model specifications.
+
+**PTV contribution:**  
+PTV provides mathematical transparency regarding the AI system's configuration. An agent running PTV exposes its `model_hash` and `policy_fingerprint` in a verified manner. Callers and downstream consumers can verify these cryptographic signatures against certified registries. This eliminates ambiguity about what model and what policy guidelines are currently active.
+
+**Applicable to:**
+- Multi-agent systems: Verification of other agents' parameters and configurations in a decentralized network.
+- Public attestation: Proving to users that the conversational model version matches official specifications.
+
+---
 
 ### Principle 4 — Explainability
 
@@ -75,9 +93,9 @@ This gives human overseers a cryptographic enforcement mechanism, not just a pol
 
 ---
 
-## MAIGF Alignment
+## Singapore MAIGF v2.0 Alignment
 
-| MAIGF Recommendation | PTV Alignment |
+| MAIGF v2.0 Recommendation | PTV Alignment |
 |---|---|
 | 2.1 — Internal Governance | PTV provides cryptographic enforcement of model governance policies |
 | 2.3 — Risk Assessment | Model tamper detection via hash binding |
@@ -102,6 +120,10 @@ PTV is a **trust anchor**, not a comprehensive AI governance solution. It is des
 
 ## Submission Context
 
-- **OECD.AI Catalogue:** Submitted as a tool addressing AI accountability and transparency
-- **IETF Draft:** draft-anandakrishnan-ptv-attested-agent-identity-00 — protocol specification
-- **AI Verify Sandbox:** PTV is a candidate for integration testing with IMDA's AI Verify sandbox environment
+- **OECD.AI Catalogue:** Submitted (under consideration) as a tool addressing AI accountability and transparency
+- **IETF Draft:** `draft-anandakrishnan-ptv-attested-agent-identity-00` — Proposed Internet-Draft protocol specification (individual submission)
+- **AI Verify Sandbox:** Planned for submission for integration testing with IMDA's AI Verify sandbox environment
+
+---
+
+*© Infocomm Media Development Authority (IMDA), Singapore. AI Verify principles referenced under fair use for academic mapping purposes.*
