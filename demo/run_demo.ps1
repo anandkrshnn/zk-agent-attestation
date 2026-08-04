@@ -26,9 +26,9 @@ Start-Sleep -Seconds 2
 
 # Step 2
 Write-Host "[STEP 2] Generating agent identity input..." -ForegroundColor Yellow
-node -e "require('fs').writeFileSync('input.json',JSON.stringify({expected_model_hash:'12345678901234567890',expected_policy_fingerprint:'09876543210987654321',actual_model_hash:'12345678901234567890',actual_policy_fingerprint:'09876543210987654321'}))"
-Write-Host "  Model Hash:         12345678901234567890" -ForegroundColor Gray
-Write-Host "  Policy Fingerprint: 09876543210987654321" -ForegroundColor Gray
+node -e "require('fs').writeFileSync('input.json',JSON.stringify({actual_model_hash:'5467453903072796007',actual_policy_fingerprint:'11071536422498843841'}))"
+Write-Host "  Model Hash:         5467453903072796007 (clinical_model_v2)" -ForegroundColor Gray
+Write-Host "  Policy Fingerprint: 11071536422498843841 (moh_policy_v1)" -ForegroundColor Gray
 Write-Host ""
 Start-Sleep -Seconds 1
 

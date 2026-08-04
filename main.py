@@ -10,8 +10,12 @@ import typer
 import json
 import time
 import hashlib
+import sys
 from typing import Optional
 from dataclasses import dataclass, asdict
+
+if hasattr(sys.stdout, 'reconfigure'):
+    sys.stdout.reconfigure(encoding='utf-8')
 
 app = typer.Typer(help="PTV Protocol: Hardware-ready agent attestation")
 
