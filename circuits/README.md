@@ -115,8 +115,28 @@ snarkjs groth16 verify verification_key.json public.json proof.json
 
 ---
 
-## v2 Planned Extensions
+## v2 / Multi-Field Hashing Updates
 
-- **Timestamp binding:** Add `nonce` and `timestamp` as public inputs to prevent proof replay attacks
-- **Multi-field hashing:** Split SHA-256 output across two field elements to preserve all 256 bits
-- **PCR binding:** Add TPM PCR quote as a third private input, binding proof to physical hardware state
+Multi-field hashing has been implemented in `circuits/poseidon_multi.circom` (`ptv-v2-multifield`):
+
+*   **Constraint count:** 480 non-linear constraints
+*   **Wasm path:** `circuits/poseidon_multi_js/poseidon_multi.wasm`
+*   **ZKey path:** `circuits/poseidon_multi_final.zkey`
+*   **Verification key:** `circuits/poseidon_multi_verification_key.json`
+
+### Compile and Verify `poseidon_multi.circom`
+```bash
+# Compile
+circom circuits/poseidon_multi.circom --r1cs --wasm --sym -o circuits/
+
+# Verify constraints
+snarkjs r1cs info circuits/poseidon_multi.r1cs
+# Expected:
+# [INFO]  snarkJS: Curve: bn-128
+# [INFO]  snarkJS: # of Wires: 487
+# [INFO]  snarkJS: # of Constraints: 480
+# [INFO]  snarkJS: # of Private Inputs: 4
+# [INFO]  snarkJS: # of Public Inputs: 2
+# [INFO]  snarkJS: # of Labels: 1553
+# [INFO]  snarkJS: # of Outputs: 0
+```

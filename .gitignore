@@ -217,3 +217,11 @@ proof.json
 public.json
 witness.wtns
 circuit.wasm
+*.wtns
+input_*.json
+proof_*.json
+active_attestation.json
+ak.ctx
+quote.*
+ak.pub
+*.ctx
