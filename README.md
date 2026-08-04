@@ -103,10 +103,14 @@ powershell -ExecutionPolicy Bypass -File demo/run_demo.ps1
 
 | Framework | PTV Alignment |
 |---|---|
-| Singapore Model AI Governance Framework | Verifiable accountability, explainability layer |
-| AI Verify (IMDA) | Cryptographic evidence for model integrity tests |
-| OECD.AI Trustworthy AI | Submitted to OECD.AI Catalogue of Tools & Metrics |
-| IETF | Internet-Draft: draft-anandakrishnan-ptv-attested-agent-identity-00 |
+| Singapore Model AI Governance Framework (PDPC) v2.0 | Verifiable accountability, explainability layer |
+| AI Verify (IMDA, Singapore) v2.0 | Cryptographic evidence for model integrity tests |
+| OECD.AI Trustworthy AI | Proposed to OECD.AI Catalogue of Tools & Metrics (under consideration) |
+| IETF | Internet-Draft: `draft-anandakrishnan-ptv-attested-agent-identity-00` (individual submission) |
+
+> **Disclaimer:** References to OECD.AI, AI Verify, and IETF are provided solely to contextualise the PTV protocol within existing AI governance and standards ecosystems. This repository is an independent research prototype and does not represent endorsement, certification, adoption, or official validation by OECD, IMDA, PDPC, IETF, or any other standards or regulatory body.
+> 
+> **IETF Note:** Any referenced Internet-Draft (e.g., `draft-anandakrishnan-ptv-attested-agent-identity-00`) is an individual submission and may change, expire, or be superseded. It does not imply IETF consensus, working group adoption, or standards-track status.
 
 ---
 

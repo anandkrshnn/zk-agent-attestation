@@ -96,9 +96,11 @@ PTV operates as a **pre-verification layer** to AI Verify's testing toolkit:
 
 ## 8. External Validation
 
-- **OECD.AI Catalogue:** Submitted to the OECD.AI Catalogue of Tools & Metrics for Trustworthy AI
-- **IETF Internet-Draft:** draft-anandakrishnan-ptv-attested-agent-identity-00 (standardisation track)
+- **OECD.AI Catalogue:** Proposed to the OECD.AI Catalogue of Tools & Metrics for Trustworthy AI (under consideration)
+- **IETF Internet-Draft:** `draft-anandakrishnan-ptv-attested-agent-identity-00` (individual submission)
 - **Reference Implementation:** https://github.com/anandkrshnn/zk-agent-attestation (open source, MIT licence)
+
+> **Disclaimer:** References to OECD.AI, AI Verify, and IETF are provided solely to contextualise the PTV protocol within existing AI governance and standards ecosystems. This document is an independent technical overview and does not represent endorsement, certification, adoption, or validation by OECD, IMDA, PDPC, IETF, or any other standards or regulatory body.
 
 ---
 

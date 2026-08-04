@@ -29,7 +29,7 @@ A Groth16 trusted setup is "toxic waste" — if the randomness used during the c
 1. **This repository is a reference implementation**, not a production deployment. No real assets, identities, or decisions are protected by this proof.
 2. **The verifier key is public** — any party can independently verify proofs using `verification_key.json`.
 3. **The circuit logic is correct regardless of the setup** — the 426-constraint Poseidon circuit enforces the correct relationship between inputs and outputs. A compromised setup affects proof forgery, not proof verification correctness.
-4. **Prototype scope** — the PTV protocol is submitted to OECD.AI and IETF as a reference design. The trusted setup ceremony is explicitly flagged as requiring a production upgrade before any real-world deployment.
+4. **Prototype scope** — the PTV protocol is proposed as a reference design in alignment with OECD.AI and IETF drafts. The trusted setup ceremony is explicitly flagged as requiring a production upgrade before any real-world deployment.
 
 ---
 

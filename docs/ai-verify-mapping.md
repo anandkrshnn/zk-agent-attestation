@@ -127,3 +127,5 @@ PTV is a **trust anchor**, not a comprehensive AI governance solution. It is des
 ---
 
 *© Infocomm Media Development Authority (IMDA), Singapore. AI Verify principles referenced under fair use for academic mapping purposes.*
+
+**Disclaimer:** This document is an independent technical mapping authored by the PTV project. It is not an official publication of, and does not represent endorsement or certification by, the Infocomm Media Development Authority (IMDA), the Personal Data Protection Commission (PDPC), or any regulatory authority in Singapore or elsewhere.
