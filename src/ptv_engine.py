@@ -2,16 +2,14 @@
 import subprocess
 import json
 import time
-import hashlib
 from pathlib import Path
 
+try:
+    from .utils import split_sha256_to_chunks
+except ImportError:
+    from utils import split_sha256_to_chunks
+
 ROOT = Path(__file__).parent.parent
-
-
-def _hash_to_field(value: str) -> str:
-    """Convert a string to a field element (truncated SHA-256 integer)."""
-    h = hashlib.sha256(value.encode()).hexdigest()
-    return str(int(h[:16], 16))  # 64-bit integer, safely within BN128 field
 
 
 def run_ptv_attestation(model_id: str, policy_id: str) -> dict:
@@ -26,24 +24,24 @@ def run_ptv_attestation(model_id: str, policy_id: str) -> dict:
         dict with keys: valid, prove_ms, verify_ms, proof_hash, error
     """
     try:
-        # Convert model/policy strings to field elements
-        model_hash = _hash_to_field(model_id)
-        policy_hash = _hash_to_field(policy_id)
+        # Convert model/policy strings to 128-bit decimal limb chunks
+        model_chunks = split_sha256_to_chunks(model_id)
+        policy_chunks = split_sha256_to_chunks(policy_id)
 
         # Write input.json
         input_data = {
-            "actual_model_hash": model_hash,
-            "actual_policy_fingerprint": policy_hash,
+            "actual_model_hash_chunks": model_chunks,
+            "actual_policy_fingerprint_chunks": policy_chunks,
             "expected_model_hash_poseidon": "__compute__",
             "expected_policy_poseidon": "__compute__"
         }
         input_path = ROOT / "input.json"
-        input_path.write_text(json.dumps(input_data))
+        input_path.write_text(json.dumps(input_data, indent=2))
 
-        # Call the Node.js prove+verify script
+        # Call the Node.js prove+verify script for multi-field Poseidon
         start = time.time()
         result = subprocess.run(
-            ["node", "demo/prove_and_verify.js"],
+            ["node", "demo/prove_and_verify_multi.js"],
             cwd=str(ROOT),
             capture_output=True,
             text=True,
@@ -52,7 +50,7 @@ def run_ptv_attestation(model_id: str, policy_id: str) -> dict:
         total_ms = (time.time() - start) * 1000
 
         if result.returncode != 0:
-            return {"valid": False, "error": result.stderr, "prove_ms": 0, "verify_ms": 0}
+            return {"valid": False, "error": result.stderr or result.stdout, "prove_ms": 0, "verify_ms": 0}
 
         # Parse output
         output = result.stdout.strip().splitlines()
@@ -75,3 +73,4 @@ def run_ptv_attestation(model_id: str, policy_id: str) -> dict:
         return {"valid": False, "error": "Proof generation timed out", "prove_ms": 0, "verify_ms": 0}
     except Exception as e:
         return {"valid": False, "error": str(e), "prove_ms": 0, "verify_ms": 0}
+

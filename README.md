@@ -116,14 +116,10 @@ powershell -ExecutionPolicy Bypass -File demo/run_demo.ps1
 
 ## 🔒 Security Considerations
 
-### SHA-256 Truncation
-Poseidon circuit inputs require field elements within the BN128 scalar field (254-bit). SHA-256 produces 256-bit outputs. The current implementation truncates 2 bits when converting SHA-256 hashes to Poseidon inputs.
+### 2 × 128-bit Multi-Field Hashing (v0.2)
+Poseidon circuit inputs require field elements within the BN128 scalar field (~254-bit), while SHA-256 digests produce 256-bit outputs. To preserve the full 256-bit entropy without truncation, PTV v0.2 implements multi-field hashing: the SHA-256 digest is split into **two 128-bit limbs**, which are fed into `Poseidon(2)`.
 
-**Impact:** The effective collision resistance is reduced from 2^128 (full SHA-256) to approximately 2^126. For a v0.1.0 research prototype operating in non-adversarial attestation environments, this reduction is acceptable. For high-security production deployments, this must be addressed before use.
-
-**Planned resolution (v3):** Full multi-field hashing — the SHA-256 output will be split across multiple Poseidon field inputs, preserving all 256 bits without truncation. This eliminates the collision risk entirely.
-
-**Current mitigation:** Do not use this implementation in adversarial environments where a motivated attacker has the ability to construct crafted model artifacts. Use only in controlled governance and audit workflows.
+**Impact:** This design completely preserves the full collision resistance of SHA-256 (2^128) and eliminates the truncation/collision risks present in the previous v0.1.0 prototype.
 
 ---
 
@@ -148,7 +144,6 @@ The PROVE phase reads real hardware measurements from a local Intel INTC TPM 2.0
 
 - TPM WMI bridge is Windows-only in v0.1.0; Linux tpm2-tools binding planned for v2
 - Single-threaded proof generation; parallelisation planned for v2
-- Poseidon inputs use truncated SHA-256 (254-bit field); full multi-field hashing planned for v3 (see Security Considerations)
 
 ---
 
